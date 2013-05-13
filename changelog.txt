@@ -1,3 +1,12 @@
+version 1.5.3 (2013/05/13) ------------------------------------------------------------
+
+  EXPERIMENTAL These edits have not been tested YET
+  ENHANCEMENT
+    * Personalized name of the COOKIE
+    * Unified configuration in a separate conf file
+    * ai-cache directory path is now using $_SERVER["PHP_SELF"]
+    * Unified file names
+  
 version 1.5.2 (2012/04/16) ------------------------------------------------------------
 
   BUG FIX

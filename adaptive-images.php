@@ -1,25 +1,25 @@
 <?php
 /* PROJECT INFO --------------------------------------------------------------------------------------------------------
-   Version:   1.5.2
+   Version:   1.5.3
    Changelog: http://adaptive-images.com/changelog.txt
 
    Homepage:  http://adaptive-images.com
    GitHub:    https://github.com/MattWilcox/Adaptive-Images
    Twitter:   @responsiveimg
 
+   Edited by: Kuzeko
+
    LEGAL:
    Adaptive Images by Matt Wilcox is licensed under a Creative Commons Attribution 3.0 Unported License.
+--------------------------------------------------------------------------------------------------------------------- */
 
-/* CONFIG ----------------------------------------------------------------------------------------------------------- */
+define('AI_VERSION', '1.5.3');
 
-$resolutions   = array(1382, 992, 768, 480); // the resolution break-points to use (screen widths, in pixels)
-$cache_path    = "ai-cache"; // where to store the generated re-sized images. Specify from your document root!
-$jpg_quality   = 75; // the quality of any generated JPGs on a scale of 0 to 100
-$sharpen       = TRUE; // Shrinking images can blur details, perform a sharpen on re-scaled images?
-$watch_cache   = TRUE; // check that the adapted image isn't stale (ensures updated source images are re-cached)
-$browser_cache = 60*60*24*7; // How long the BROWSER cache should last (seconds, minutes, hours, days. 7days by default)
+/* INCLUDE CONFIG --------------------------------------------------------------------------------------------------- */
 
-/* END CONFIG ----------------------------------------------------------------------------------------------------------
+require_once('adaptive-images-config.php');
+
+/* ---------------------------------------------------------------------------------------------------------------------
 ------------------------ Don't edit anything after this line unless you know what you're doing -------------------------
 --------------------------------------------------------------------------------------------------------------------- */
 
@@ -30,19 +30,16 @@ $requested_file = basename($requested_uri);
 $source_file    = $document_root.$requested_uri;
 $resolution     = FALSE;
 
-/* Mobile detection 
+/* Mobile detection
    NOTE: only used in the event a cookie isn't available. */
 function is_mobile() {
   $userAgent = strtolower($_SERVER['HTTP_USER_AGENT']);
-  return strpos($userAgent, 'mobile');
+  return !(strpos($userAgent, 'mobile') === FALSE);
 }
 
 /* Does the UA string indicate this is a mobile? */
-if(!is_mobile()){
-  $is_mobile = FALSE;
-} else {
-  $is_mobile = TRUE;
-}
+$is_mobile = is_mobile();
+
 
 // does the $cache_path directory exist already?
 if (!is_dir("$document_root/$cache_path")) { // no
@@ -170,12 +167,13 @@ function generateImage($source_file, $cache_file, $resolution) {
     $transparent = imagecolorallocatealpha($dst, 255, 255, 255, 127);
     imagefilledrectangle($dst, 0, 0, $new_width, $new_height, $transparent);
   }
-  
+
   ImageCopyResampled($dst, $src, 0, 0, 0, 0, $new_width, $new_height, $width, $height); // do the resize in memory
   ImageDestroy($src);
 
   // sharpen the image?
-  // NOTE: requires PHP compiled with the bundled version of GD (see http://php.net/manual/en/function.imageconvolution.php)
+  // NOTE: requires PHP compiled with the bundled version of GD
+  // (see http://php.net/manual/en/function.imageconvolution.php)
   if($sharpen == TRUE && function_exists('imageconvolution')) {
     $intSharpness = findSharp($width, $new_width);
     $arrMatrix = array(
@@ -189,7 +187,7 @@ function generateImage($source_file, $cache_file, $resolution) {
   $cache_dir = dirname($cache_file);
 
   // does the directory exist already?
-  if (!is_dir($cache_dir)) { 
+  if (!is_dir($cache_dir)) {
     if (!mkdir($cache_dir, 0755, true)) {
       // check again if it really doesn't exist to protect against race conditions
       if (!is_dir($cache_dir)) {
@@ -241,15 +239,15 @@ if (!extension_loaded('gd')) { // it's not loaded
 }
 
 /* Check to see if a valid cookie exists */
-if (isset($_COOKIE['resolution'])) {
-  $cookie_value = $_COOKIE['resolution'];
+if (isset($_COOKIE[AI_COOKIE_NAME])) {
+  $cookie_value = $_COOKIE[AI_COOKIE_NAME];
 
   // does the cookie look valid? [whole number, comma, potential floating number]
   if (! preg_match("/^[0-9]+[,]*[0-9\.]+$/", "$cookie_value")) { // no it doesn't look valid
     setcookie("resolution", "$cookie_value", time()-100); // delete the mangled cookie
   }
   else { // the cookie is valid, do stuff with it
-    $cookie_data   = explode(",", $_COOKIE['resolution']);
+    $cookie_data   = explode(",", $_COOKIE[AI_COOKIE_NAME]);
     $client_width  = (int) $cookie_data[0]; // the base resolution (CSS pixels)
     $total_width   = $client_width;
     $pixel_density = 1; // set a default, used for non-retina style JS snippet
@@ -310,7 +308,8 @@ $cache_file = $document_root."/$cache_path/$resolution/".$requested_uri;
 
 /* Use the resolution value as a path variable and check to see if an image of the same name exists at that path */
 if (file_exists($cache_file)) { // it exists cached at that size
-  if ($watch_cache) { // if cache watching is enabled, compare cache and source modified dates to ensure the cache isn't stale
+  /* if cache watching is enabled, compare cache and source modified dates to ensure the cache isn't stale */
+  if ($watch_cache) {
     $cache_file = refreshCache($source_file, $cache_file, $resolution);
   }
 

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    
+
     <style>
       body {
         width : 90%; margin : 1em auto;
@@ -12,7 +12,7 @@
       p code { color : #99e; }
       pre > code { display : block; padding : 1em; border : 1px solid #999; }
       :target { background-color : #000;}
-      
+
       a,a:visited{ color : #99f; }
     </style>
   </head>
@@ -23,19 +23,19 @@
     <p>Copy <code>adaptive-images.php</code> and <code>.htaccess</code> into the root directory of your site. If you already have a htaccess file DO NOT OVERWRITE IT, skip down to the advanced instructions.</p>
     <p>Copy the following Javascript into the &lt;head&gt; of your site. It MUST go in the head as the first bit of JS, before any other JS. This is because it needs to work as soon as possible, any delay wil have adverse effects.</p>
 <pre><code>&lt;script&gt;document.cookie='resolution='+Math.max(screen.width,screen.height)+'; path=/';&lt;/script&gt;</code></pre>
-    <p>That's it, you're done. You should proberbly <a href="#config">configure some preferences</a> though.</p>
+    <p>That's it, you're done. You should probably <a href="#config">configure some preferences</a> though.</p>
     <p>NOTE 1: if you would like to take advantage of high-pixel density devices such as the iPhone4 or iPad3 Retina display you can use the following JavaScript instead.
        It will send higher-resolution images to such devices - be aware this will mean slower downloads for Retina users, but better images.</p>
     <pre><code>&lt;script&gt;document.cookie='resolution='+Math.max(screen.width,screen.height)+("devicePixelRatio" in window ? ","+devicePixelRatio : ",1")+'; path=/';&lt;/script&gt;</code></pre>
     <p>NOTE 2: you do not need the <code>ai-cookie.php</code> file unless you are using the <a href="#alternate">alternate method</a> of detecting the users screen size. So delete it if you like, no one likes mess.</p>
     <p>NOTE 3: If you are extra paranoid about security you can have the ai-cache directory sit outside of your web-root so it's not publicly accessible. Just set the paths properly in the .htaccess file and the .php file.</p>
-    
+
     <h2>You already have a .htaccess file</h2>
     <p>I strongly advise you to duplicate that file so you can revert to it if things go pear-shaped.</p>
     <p>Open your existing .htaccess file and edit the contents. You'll need to look and see if there is a section that begins with the following:</p>
     <p><code>&lt;IfModule mod_rewrite.c&gt;</code></p>
     <p>If there is, then you need to add the following lines into that block:</p>
-    
+
 <pre><code># Adaptive-Images -----------------------------------------------------------------------------------
 
 # Add any directories you wish to omit from the Adaptive-Images process on a new line, as follows:
@@ -75,10 +75,10 @@ RewriteRule \.(?:jpe?g|gif|png)$ adaptive-images.php
     <h3>.htaccess</h3>
     <p>Instructions are in the file as comments (any line that starts with a # is a comment, and doesn't actually do anything)</p>
     <p>Follow the instructions inside that code to specify any directories you don't want to use Adaptive-Images on.</p>
-    
+
     <h3>PHP</h3>
     <p>You can now open the php file and have a play with the settings that are in the CONFIG area. By default it looks like this:</p>
-      
+
 <pre><code>/* CONFIG ----------------------------------------------------------------------------------------------------------- */
 
 $resolutions   = array(1382, 992, 768, 480); // the resolution break-points to use (screen widths, in pixels)
@@ -96,7 +96,7 @@ $browser_cache = 60*60*24*7; // How long the BROWSER cache should last (seconds,
   <p><code>$cache_path</code> If you don't like the cached images being written to that folder, you can put it somewhere else. Just put the path to the folder here and make sure you create it on the server if for some reason that couldn't be done autmoatically by adaptive-images.php.</p>
   <p><code>$sharpen</code> Will perform a subtle sharpening on the rescaled images. Usually this is fine, but you may want to turn it off if your server is very very busy.</p>
   <p><code>$watch_cache</code> If your server gets very busy it may help performance to turn this to FALSE. It will mean however that you will have to manually clear out the cache directory if you change a resource file</p>
-  
+
 <h2 id="alternate">Alternate method for those who can't rely on JavaScript</h2>
 
 <p>One of the weaknesses of the Adaptive Images process is its reliance on JavaScript to detect the visitors screen size, and set a cookie with that screen size inside it. The following is a solution for people who need the system to work without the use of JavaScript, but it does have a major caveat which is why this is not the default method, and why it is "unsupported" (I'm not going to troubleshoot problems you have with this method).</p>
