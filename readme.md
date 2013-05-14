@@ -9,7 +9,7 @@ It is intended for use with [Responsive Designs](http://www.abookapart.com/produ
 Copy `adaptive-images.php`, `adaptive-images-config.php` and `.htaccess` into the root directory of your site. 
 If you already have a `.htaccess` file __DO NOT OVERWRITE IT__, skip down to the advanced instructions.
 
-You can modify the configuration options in the `adaptive-images-config.php` files.
+You can modify the configuration options in the `adaptive-images-config.php` file.
 
 The `adaptive-images.php` script will create an `ai-cache` folder in the location specified inside the configuration file.  
 If you are extra paranoid about security you can have the ai-cache directory sit outside of your web-root so it's not publicly accessible. 
@@ -39,7 +39,7 @@ If there is, then you need to add the following lines into that block:
     RewriteRule \.(?:jpe?g|gif|png)$ adaptive-images.php
     # END Adaptive-Images -------------------------------------------------------------------------------
 
-Otherwise, the complete `<IfModule mod_rewrite.c>` bloc in your `.htaccess` should look like this
+Otherwise, the complete `<IfModule mod_rewrite.c>` block in your `.htaccess` should look like this
 
     <IfModule mod_rewrite.c>
       Options +FollowSymlinks
