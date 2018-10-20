@@ -1,5 +1,7 @@
 # Adaptive Images
 
+## NOT MAINTAINED
+
 Is a solution to automatically create, cache, and deliver device-appropriate versions of your website's content images. 
 It does not require you to change your mark-up. 
 It is intended for use with [Responsive Designs](http://www.abookapart.com/products/responsive-web-design) and to be combined with [Fluid Image](http://unstoppablerobotninja.com/entry/fluid-images/) techniques.
